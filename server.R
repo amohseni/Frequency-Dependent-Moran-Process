@@ -2,6 +2,7 @@
 # For 2x2 Symmetric Games
 # ***Recall: Load the 'expm' package for Matrix exponentiation.*** 
 
+# Make minor changes
 # Call the shiny GUI library
 library(shiny)
 
