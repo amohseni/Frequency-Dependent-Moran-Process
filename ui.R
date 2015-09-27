@@ -4,7 +4,7 @@ library(shiny)
 shinyUI(fluidPage(
   
   # Application title
-  titlePanel("Moran Process for 2x2 Symmetric Games"),
+  titlePanel("The Moran Process for 2x2 Symmetric Games"),
   
   # Sidebar with a slider input for Population Size
   sidebarLayout(
@@ -49,19 +49,19 @@ shinyUI(fluidPage(
                     "Mutation Rate:",
                     min = 0,
                     max = .1,
-                    value = .01),
+                    value = .05),
 
         sliderInput("intensityOfSelection",
                       "Intensity of Selection:",
                       min = 0,
                       max = 1,
-                      value = 1),
+                      value = .1),
         
         sliderInput("probabilityMax",
                     "Display Max Probability:",
                     min = 0,
                     max = 1,
-                    value = .1),
+                    value = .05),
     
         tags$head(tags$script(src = "message-handler.js")),
         p(actionButton("simulateSinglePopulation", "Simulate Single Population"), align = "center"),
