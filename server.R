@@ -1,9 +1,8 @@
 # COMPUTING THE MORAN PROCESS
 # For 2x2 Symmetric Games
-# ***Recall: Load the 'expm' package for Matrix exponentiation.*** 
 
 # Load the shiny GUI library, 
-# and the matrix exponential package
+# and the matrix exponential package.
 library(shiny)
 library(expm)
 
@@ -12,37 +11,39 @@ shinyServer(function(input, output, session) {
   # The expression that generates our histogram is wrapped in a call to renderPlot to indicate that:
   #  1) It is "reactive" and therefore should re-execute automatically when inputs change
   #  2) Its output type is a plot
-  
   output$stationaryDistribution <- renderPlot({
     
+# FINDING THE STATIONARY DISTRIBUION OF THE MORAN PROCESS   
     # Let G be a 2x2 symmetric game 
-    # with two players
-    # pure strategies A, B
+    # with two players,
+    # pure strategies A and B,
     # and payoff matrix M = matrix(c(a,b,c, d), nrow=2, ncol=2, byrow=TRUE).
+
     # Then the payoff to each combination of actions would be given by
     # U(A,A)=a, U(A,B)=b, U(B,A)=c, U(B,B)=d. 
     
-    # We assign test payoff values for different games types as follows:
-    # The Degenerate Game (0)
-    #assignVec(c('a','b', 'c', 'd'), c(1, 1, 1, 1), envir = .GlobalEnv)
-    # Prisoner's Dilemma (PD)
-    # assignVec(c('a','b', 'c', 'd'), c(2, 0, 3, 1), envir = .GlobalEnv)
-    # Stag Hunt (SH)
-    # assignVec(c('a','b', 'c', 'd'), c(3, 0, 2, 2), envir = .GlobalEnv)  
-    # Hawk-Dove (HD)
-    # assignVec(c('a','b', 'c', 'd'), c(0, 3, 1, 2), envir = .GlobalEnv)
-    # Anticoordination Game (HD)
-    #assignVec(c('a','b', 'c', 'd'), c(1, 3, 2, 1), envir = .GlobalEnv)
+    # The payoff values a, b, c, d are input from the user interface
     a <- as.numeric(input$a)
     b <- as.numeric(input$b)
     c <- as.numeric(input$c)
     d <- as.numeric(input$d)    
-    
+
+    # The five traditional game types are provided as defaults:
+    # The Degenerate Game (0)
+    #assignVec(c('a','b', 'c', 'd'), c(1, 1, 1, 1), envir = .GlobalEnv)
+    # Dominating Strategy Game [e.g., Prisoner's Dilemma]
+    # assignVec(c('a','b', 'c', 'd'), c(2, 0, 3, 1), envir = .GlobalEnv)
+    # Coordination Game [e.g., Stag Hunt]
+    # assignVec(c('a','b', 'c', 'd'), c(3, 0, 2, 2), envir = .GlobalEnv)  
+    # Anticoordination Game [e.g., Hawk-Dove]
+    # assignVec(c('a','b', 'c', 'd'), c(0, 3, 1, 2), envir = .GlobalEnv)
+    #assignVec(c('a','b', 'c', 'd'), c(1, 3, 2, 1), envir = .GlobalEnv)
+        
     # Population Size (we are interested in 'Large Populations' where N -> ∞)
     N <- as.numeric(input$populationSize)
     
-    # i = number of type A
-    # N-i = number of type B
+    # i = number of A-types
+    # N-i = number of B-types
     
     # Pr(A-type interacts with A-type) = (i-1) / (N-1)
     # Pr(A-type interacts with B-type) = (N-i) / (N-1)  
@@ -59,10 +60,11 @@ shinyServer(function(input, output, session) {
     # Fitness (Reproductive/Imitative Success) of Each Strategy
     fA <- function(i) (1 - w + w * FA(i))
     fB <- function(i) (1 - w + w * FB(i))
-    
-    #Transition Proabilities for Moran Process with Mutation
+
     # Mutation Term
     µ <- as.numeric(input$mutationRate)
+    
+    #Transition Proabilities for Moran Process with Mutation
     # Pr(j -> j+1)
     PforwardM <- function(i) (1-µ)*((i * fA(i) / P(i)) * ((N-i) / N)) + µ*(((N-i) * fB(i) / P(i)) * ((N-i) / N))
     # Pr(j -> j-1)		
@@ -85,49 +87,45 @@ shinyServer(function(input, output, session) {
 
     # Denote MPM^∞ := MPMlim
     MPMlim <- MPM %^% 10000000
-    # We label the matrix, and format P∞ to round numbers off at the 3rd digit 
+
+    # We print the title of the stationary distribution
     print("The Moran Process with Mutation Under the 2x2 Symmetric Game M")
-    
-    # Finally, we print the stationary disribution π for the MPM:
+    # then print the stationary disribution π for the MPM (and round the entries to the N/2 digit):
     π <- MPMlim[round(N/2),]
     print("Stationary Distribution π of the MPM")
     print(π)
     
-    # Draw the Barplot
+    # Get the max (y-axis) probability value from the interace
     probMax <- as.numeric(input$probabilityMax)
-    
+
+    # Draw the Barplot
     barplot(π, col=rgb(82, 140, 202, max = 255), main="Stationary Distribution", ylab=expression('Probability µ'[i]), xlab="# of A-types in the population (i)", ylim=c(0,probMax), space=0)
     # Establish the interval between x-axis marks as a function of N.
     xInterval <- round(N/10, digits = 0)
     axis(side=1, at=seq(0,N, by = xInterval))
     box()
-#    hist(x, breaks = bins, col = 'skyblue', border = 'white')
   })
 
   
-  
-  
-  
-# SIMULATING THE MORAN PROCESS
-# For 2x2 Symmetric Games    
 
-  randomVals <- eventReactive(input$simulateSinglePopulation, {})
-    
+  
+# SIMULATING THE MORAN PROCESS FOR A SINGLE POPULATION
+
+  # We create the function that simulates the population from a random initial condition
+
   output$singlePopulationSimulation <- renderPlot({
     simulationResetVariable<-input$simulateSinglePopulation
-    # Function name: MP.sim 
-    # Input: t (number of steps/length of simulation), P (transition matrix), π0 (initial state)
+    # Inputs: 
+    # Duration of simulation/number of generations of birth
     t <- as.numeric(input$simulationTime)
-    # Population Size (we are interested in 'Large Populations' where N -> ∞)
+    # Population Size
     N <- as.numeric(input$populationSize)
-    # Mutation Term
+    # Mutation Rate
     µ <- as.numeric(input$mutationRate)    
-    # Intensity of Selection (we are interested in in 'Weak Selection' where w -> 0)
+    # Intensity of Selection
     w <- as.numeric(input$intensityOfSelection)    
     
     #Transition Proabilities for Moran Process with Mutation
-    # Mutation Term
-    µ <- as.numeric(input$mutationRate)
     # Pr(j -> j+1)
     PforwardM <- function(i) (1-µ)*((i * fA(i) / P(i)) * ((N-i) / N)) + µ*(((N-i) * fB(i) / P(i)) * ((N-i) / N))
     # Pr(j -> j-1)		
@@ -148,7 +146,7 @@ shinyServer(function(input, output, session) {
                     ifelse(c == r+1, PforwardM(r),
                            0))))
     
-    # Output: a vector of length t
+    # Output: A vector of length t
     MPM.sim <- function(t, MPM, πNought) {
       sim <- as.numeric(t)
       if (missing(πNought)) { # If the initial state is not specified
