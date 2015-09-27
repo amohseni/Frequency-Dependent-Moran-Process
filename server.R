@@ -2,9 +2,10 @@
 # For 2x2 Symmetric Games
 # ***Recall: Load the 'expm' package for Matrix exponentiation.*** 
 
-# Make minor changes
-# Call the shiny GUI library
+# Load the shiny GUI library, 
+# and the matrix exponential package
 library(shiny)
+library(expm)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
@@ -94,7 +95,8 @@ shinyServer(function(input, output, session) {
     
     # Draw the Barplot
     probMax <- as.numeric(input$probabilityMax)
-    barplot(π, col = "gray", main="Stationary Distribution", ylab=expression('Probability µ'[i]), xlab="# of A-types in the population (i)", ylim=c(0,probMax), space=0)
+    
+    barplot(π, col=rgb(82, 140, 202, max = 255), main="Stationary Distribution", ylab=expression('Probability µ'[i]), xlab="# of A-types in the population (i)", ylim=c(0,probMax), space=0)
     # Establish the interval between x-axis marks as a function of N.
     xInterval <- round(N/10, digits = 0)
     axis(side=1, at=seq(0,N, by = xInterval))
@@ -160,7 +162,7 @@ shinyServer(function(input, output, session) {
     }
     
     # Plot the simulation
-    plot(MPM.sim(t,MPM), type="l", main="Single Population Simulation", xlab="Time (t)", ylab="# of A-types in the population (i)", ylim=c(0,N))
+    plot(MPM.sim(t,MPM), type="l", main="Single Population Simulation", xlab="Time (t)", ylab="# of A-types in the population (i)", ylim=c(0,N), col=rgb(82, 140, 202, max = 255))
   }  
   )
   
