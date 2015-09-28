@@ -22,7 +22,7 @@ shinyServer(function(input, output, session) {
     # Then the payoff to each combination of actions would be given by
     # U(A,A)=a, U(A,B)=b, U(B,A)=c, U(B,B)=d. 
 
-    # The five traditional game types are provided as defaults:
+    # The five traditional game types and a customizable option are provided as default payoff settings:
     if (input$interaction_structure=='Anticoordination Game') {
       updateNumericInput(session, "a", value =1)
       updateNumericInput(session, "b", value =3)
@@ -105,6 +105,17 @@ shinyServer(function(input, output, session) {
                     ifelse(c == r+1, PforwardM(r),
                            0))))
 
+    # We approximate MPM^∞ in order to estimate the Stationary Distribution µ
+    # which will be the vector composing every row of MPM^∞
+    
+    # Note: We know that the stationary distribution µ exists because the addition of mutation makes the Markov process Ergodic
+    # That is: Where the Moran Process is already finite, and aperiodic, 
+    # it is now irreducible (has only one recursive class) as every state communicates with every other (is in a single class), 
+    # and every state will be visited an infinite number of times in the limit.
+    # In the absence of mutation, there are were two (singleton) recursive classes
+    # corresponding to the two absorbing states where the population is all A-type or B-type.
+    # It follows from being ergodic that the limit distribution π is independent of any initial distribution π(0).
+    
     # Denote MPM^∞ := MPMlim
     MPMlim <- MPM %^% 10000000
     # Select any row from the MPM^∞ matrix to get the stationary disribution µ for the MPM
