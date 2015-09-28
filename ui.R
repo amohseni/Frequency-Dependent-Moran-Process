@@ -112,13 +112,22 @@ shinyUI(fluidPage(
                            plotOutput("singlePopulationSimulation")),
                   tabPanel("Invasion Dynamics & Replacement Probabilities", 
                            h4("Invasion Dynamics"),
-                             p("Invasion dynamics for A:"),
+                             h5("Invasion dynamics for A:"),
                                textOutput("InvDynA1"),
                                textOutput("InvDynA2"),
-                             p("Invasion dynamics for B:"),
+                             br(),
+                             h5("Invasion dynamics for B:"),
                                textOutput("InvDynB1"),
                                textOutput("InvDynB2"),   
-                           h4("Replacement Probabilities")
+                             br(), 
+                           h4("Replacement Probabilities"),
+                             h5("Replacement Probabilities A:"),
+                               textOutput("RepProbA1"),
+                               textOutput("RepProbA2"),
+                             br(),
+                             h5("Replacement Probabilities B:"),
+                               textOutput("RepProbB1"),
+                               textOutput("RepProbB2")
                            ) 
       )
     )

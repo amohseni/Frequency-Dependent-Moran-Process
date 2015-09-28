@@ -137,7 +137,7 @@ shinyServer(function(input, output, session) {
     box() 
    
      
-# COMPUTING THE INVASION PROBABILITIES AND FIXATION DYNAMICS
+# COMPUTING THE INVASION DYNAMICS AND REPLACEMENT PROBABILITIES
     # We compute the invasion probability for each strategy.
     # We compare the fitness of each strategy, fA(i)  and fB(i), to see which strategy is favored by selection given that the population is in a state with i A-types. We define this as follows:
     h <- function(i) (fA(i)-fB(i))
@@ -146,16 +146,20 @@ shinyServer(function(input, output, session) {
     # and h(N-1) is the difference in fitness when there is a single B-type mutant in the population.
     # If the fitness of a single mutant is less than the fitness of the resident population, then selection opposes invasion. 
     # Conversely, a strategy favored by selection for invading is likely to find a foothold in the population. 
+    
     print("Invasion dynamics for A:")
-    print(h(1))
-    output$InvDynA1 <- renderText({ toString(h(1)) })
-    if (h(1)>0) {print("Selection favors A invading B")} else if (h(1)<0) {print("Selection opposes A invading B")} else {print("Invasion is Selection regarding invasion by A")}
-    output$InvDynA1 <- renderText({ toString(h(1)) })
+    output$InvDynA1 <- if (h(1)>0) { renderText({"Selection favors A invading B."}) }
+      else if (h(1)<0) { renderText({"Selection opposes A invading B."}) }
+        else { renderText({"Invasion is neutral regarding invasion by A."}) }
+    output$InvDynA2 <- renderText({ toString(h(1)) })
     
     print("Invasion dynamics for B:")
-     print(h(N-1))
-    if (h(N-1)>0) {print("Selection opposes B invading A")} else if (h(N-1)<0) {print("Selection favors B invading A")} else {print("Selection is neutral regarding invasion by B")}
+    output$InvDynB1 <- if (h(N-1)>0) { renderText({"Selection opposes B invading A."}) } 
+      else if (h(N-1)<0) { renderText({"Selection favors B invading A."}) } 
+        else { renderText({"Selection is neutral regarding invasion by B."}) }
+    output$InvDynB2 <- renderText({ toString(h(N-1)) })
     
+        
     # Next, we compute the fixation probabilities, ρAB and ρBA, 
     # corresponding to the probability that the process transitions from a single A-type mutant to an all-A population 
     # and that the process transitions from a single B-type mutant to an all-B population, respectively. 
@@ -180,11 +184,15 @@ shinyServer(function(input, output, session) {
     # If the fixation probability of the mutant is less than that of a neutral mutant, 
     # then we say selection opposes fixation. If the fixation probability is greater than that of a neutral mutant, then we say selection favors fixation.
     print("Replacement dynamics for A:")
-    print(ρAB)
-    if (ρAB > (1/N)) {print("Selection favors A replacing B")} else if (ρAB < (1/N)) {print("Selection opposes A replacing B")} else {print("Selection is neutral regarding replacement by A")}
+    output$RepProbA2 <- renderPrint( print(ρAB) )
+    output$RepProbA1 <- renderPrint( if (ρAB > (1/N)) {print("Selection favors A replacing B.")} 
+                                     else if (ρAB < (1/N)) {print("Selection opposes A replacing B.")} 
+                                     else {print("Selection is neutral regarding replacement by A.")} )
     print("Replacement dynamics for B:")
-    print(ρBA)
-    if (ρBA > (1/N)) {print("Selection favors B replacing A")} else if (ρBA < (1/N)) {print("Selection opposes B replacing A")} else {print("Selection is neutral regarding replacement by B")}
+    output$RepProbB2 <- renderPrint( print(ρBA) )
+    output$RepProbB1 <- renderPrint( if (ρBA > (1/N)) {print("Selection favors B replacing A.")} 
+                                     else if (ρBA < (1/N)) {print("Selection opposes B replacing A.")} 
+                                     else {print("Selection is neutral regarding replacement by B.")} )
         
   })
 
