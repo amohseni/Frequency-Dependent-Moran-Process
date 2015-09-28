@@ -12,6 +12,7 @@ shinyServer(function(input, output, session) {
   #  1) It is "reactive" and therefore should re-execute automatically when inputs change
   #  2) Its output type is a plot
   output$stationaryDistribution <- renderPlot({
+
     
 # FINDING THE STATIONARY DISTRIBUION OF THE MORAN PROCESS   
     # Let Γ be a 2x2 symmetric game 
@@ -32,7 +33,7 @@ shinyServer(function(input, output, session) {
     if (input$interaction_structure=='Coordination Game') {
       updateNumericInput(session, "a", value = 3)
       updateNumericInput(session, "b", value = 0)
-      updateNumericInput(session, "c", value = 2)
+      updateNumericInput(session, "c", value = 1)
       updateNumericInput(session, "d", value = 2)
     }
     if (input$interaction_structure=='Dominating Strategy Game') {
@@ -134,13 +135,61 @@ shinyServer(function(input, output, session) {
     axis(side=1, at=seq(0,N, by = xInterval))
     # Remove the box around the barplot
     box() 
+   
+     
+# COMPUTING THE INVASION PROBABILITIES AND FIXATION DYNAMICS
+    # We compute the invasion probability for each strategy.
+    # We compare the fitness of each strategy, fA(i)  and fB(i), to see which strategy is favored by selection given that the population is in a state with i A-types. We define this as follows:
+    h <- function(i) (fA(i)-fB(i))
+    # Invasion dynamics then can be determined by evaluating the sign of h(1) and h(N-1), 
+    # where h(1) is the difference in fitness between A-types and B-types where there is a single A-type mutant in the population, 
+    # and h(N-1) is the difference in fitness when there is a single B-type mutant in the population.
+    # If the fitness of a single mutant is less than the fitness of the resident population, then selection opposes invasion. 
+    # Conversely, a strategy favored by selection for invading is likely to find a foothold in the population. 
+    print("Invasion dynamics for A:")
+    print(h(1))
+    output$InvDynA1 <- renderText({ toString(h(1)) })
+    if (h(1)>0) {print("Selection favors A invading B")} else if (h(1)<0) {print("Selection opposes A invading B")} else {print("Invasion is Selection regarding invasion by A")}
+    output$InvDynA1 <- renderText({ toString(h(1)) })
+    
+    print("Invasion dynamics for B:")
+     print(h(N-1))
+    if (h(N-1)>0) {print("Selection opposes B invading A")} else if (h(N-1)<0) {print("Selection favors B invading A")} else {print("Selection is neutral regarding invasion by B")}
+    
+    # Next, we compute the fixation probabilities, ρAB and ρBA, 
+    # corresponding to the probability that the process transitions from a single A-type mutant to an all-A population 
+    # and that the process transitions from a single B-type mutant to an all-B population, respectively. 
+    # (To do this we creat a vector of the ratios of the fixation probabilities fB(i)/fA(i),
+    # and proceed to compute the culative sum of the cumulative products of transitions over all population states.)
+    X <- c(1:N)
+    HBA <- function(i) (fB(i)/fA(i))
+    HBAvector <-sapply(X, HBA)
+    HBAproductsVector <- cumprod(HBAvector)
+    HBAsumsOfProductsVector <- cumsum(HBAproductsVector)
+    ρAB <- 1/(1 + HBAsumsOfProductsVector[N-1])
+    
+    Y <- c(1:N)
+    HAB <- function(i) (fA(i)/fB(i))
+    HABvector <-sapply(Y, HAB)
+    HABproductsVector <- cumprod(HABvector)
+    HABsumsOfProductsVector <- cumsum(HABproductsVector)
+    ρBA <- 1/(1 + HABsumsOfProductsVector[N-1])
+    
+    # We compare the fixation probabilities of each strategy to that of a neutral mutant
+    # (whose fixation probability is 1/N). 
+    # If the fixation probability of the mutant is less than that of a neutral mutant, 
+    # then we say selection opposes fixation. If the fixation probability is greater than that of a neutral mutant, then we say selection favors fixation.
+    print("Replacement dynamics for A:")
+    print(ρAB)
+    if (ρAB > (1/N)) {print("Selection favors A replacing B")} else if (ρAB < (1/N)) {print("Selection opposes A replacing B")} else {print("Selection is neutral regarding replacement by A")}
+    print("Replacement dynamics for B:")
+    print(ρBA)
+    if (ρBA > (1/N)) {print("Selection favors B replacing A")} else if (ρBA < (1/N)) {print("Selection opposes B replacing A")} else {print("Selection is neutral regarding replacement by B")}
+        
   })
 
   
-
-  
 # SIMULATING THE MORAN PROCESS FOR A SINGLE POPULATION
-
   # We create the function that simulates the population from a random initial population composition
   output$singlePopulationSimulation <- renderPlot({
     simulationResetVariable<-input$simulateSinglePopulation

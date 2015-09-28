@@ -11,57 +11,54 @@ shinyUI(fluidPage(
       
       sidebarPanel(
     
-        selectInput("interaction_structure", "Game Type",
-            c("Degenerate Game", "Dominating Strategy Game", "Coordination Game", "Anticoordination Game", "Custom (to manually change payoffs)"),
+        selectInput("interaction_structure", "Game Type:`",
+            c("Degenerate Game", "Dominating Strategy Game", "Coordination Game", "Anticoordination Game", "Custom (manually change payoffs)"),
             selected = "Anticoordination Game"
           ),
         
-        uiOutput("ui"),
-        
         # 2X2 Game Payoff Input Fields
-        strong("Payoff / Fitness Matrix:"),
+        strong("Payoff Matrix:"),
         
           # 1st Row: Types
           fluidRow(
-            column(2),
-            column(5,
-                   p("Type A", align="center")
+            column(4),
+            column(4,
+                   p("Type A", align="center", style="margin-top:7px")
                    ),
-            column(5,
-                   p("Type B", align="center")
+            column(4,
+                   p("Type B", align="center", style="margin-top:7px")
             )),
 
           # 2nd Row: Payoffs to Type A
           fluidRow(
-            column(2,
-                   p("Type A", align="center")
+            column(4,
+                   p("Type A", align="right", style="margin-top:7px;")
                    ),
-            column(5,
-                   
-                   numericInput("a", 
+            column(4,
+                  numericInput("a", 
                                 label = NULL, 
                                 value = 1,
                                 min = 1)
-          ),
-          column(5,
-                 numericInput("b", 
-                              label = NULL, 
-                              value = 3,
-                              min = 1)
-          )),
+            ),
+            column(4,
+                   numericInput("b", 
+                                label = NULL, 
+                                value = 3,
+                                min = 1)
+            )),
         
           # 3rd Row: Payoffs to Type B
           fluidRow(
-            column(2,
-                   p("Type B", align="center")
+            column(4,
+                   p("Type B", align="right", style="margin-top:7px;")
                   ),
-            column(5,      
+            column(4,      
                    numericInput("c", 
                                 label = NULL, 
                                 value = 2,
                                 min = 1)
             ), 
-            column(5,
+            column(4,
                    numericInput("d", 
                                 label = NULL, 
                                 value = 1,
@@ -113,7 +110,16 @@ shinyUI(fluidPage(
                   tabPanel("Stationary (Limit) Distribution & Simulation", 
                            plotOutput("stationaryDistribution"), 
                            plotOutput("singlePopulationSimulation")),
-                  tabPanel("Replacement Probabilities & Invasion Dynamics", verbatimTextOutput("summary")) 
+                  tabPanel("Invasion Dynamics & Replacement Probabilities", 
+                           h4("Invasion Dynamics"),
+                             p("Invasion dynamics for A:"),
+                               textOutput("InvDynA1"),
+                               textOutput("InvDynA2"),
+                             p("Invasion dynamics for B:"),
+                               textOutput("InvDynB1"),
+                               textOutput("InvDynB2"),   
+                           h4("Replacement Probabilities")
+                           ) 
       )
     )
   )
