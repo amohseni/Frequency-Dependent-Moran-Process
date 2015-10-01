@@ -1,8 +1,8 @@
 name: Moran-Process
 account: amohseni
 server: shinyapps.io
-bundleId: 275911
+bundleId: 278482
 url: https://amohseni.shinyapps.io/Moran-Process
-when: 1443417636.29578
+when: 1443672580.13448
 asMultiple: FALSE
 asStatic: FALSE
