@@ -12,8 +12,8 @@ shinyServer(function(input, output, session) {
   #  1) It is "reactive" and therefore should re-execute automatically when inputs change
   #  2) Its output type is a plot
   output$stationaryDistribution <- renderPlot({
-
     
+        
 # FINDING THE STATIONARY DISTRIBUION OF THE MORAN PROCESS   
     # Let Γ be a 2x2 symmetric game 
     # with two players,
@@ -285,10 +285,45 @@ shinyServer(function(input, output, session) {
          type="l",
          main="Single Population Simulation", 
          xlab="Time (t)", ylab="# of A-types in the population (i)", 
-         ylim=c(0,N), 
-         col=rgb(82, 140, 202, max = 255))  
+         ylim=c(0,N),
+         col=rgb(82, 140, 202, max = 255))
+    abline(h=which.max(µ), col=rgb(82, 140, 202, max = 255))
     }  
   )
+ 
+  # We solve for all symmetric Nash equilibria
+    solveNash <- function(a, b, c, d) 
+      if (a>c && b>=d ) { "{1}"
+    } else if (a>c && b<d ) { paste("{0, ", round((d-b)/(d+a-b-c), digits = 4), ", 1}")
+    } else if (a==c && b==d ) { "[0, 1]"
+    } else if (a==c && b>d ) { "{1}"
+    } else if (a==c && b<d ) { "{0}"
+    } else if (a<c && b>d ) { paste("{", round((b-d)/(b+c-a-d), digits = 4), "}") 
+    } else if (a<c && b<=d ) { "{0}"
+    } else "ERROR"
+    # And reactive output
+     output$Nash <- renderText(
+       { solveNash(input$a, input$b, input$c, input$d) }
+       )
+     
+     # We solve for ESS
+     solveESS <- function(a, b, c, d) 
+       if (a>c && b>=d ) { "{1}"
+       } else if (a>c && b<d ) { "{0, 1}"
+       } else if (a==c && b==d ) { "∅"
+       } else if (a==c && b>d ) { "{1}"
+       } else if (a==c && b<d ) { "{0}"
+       } else if (a<c && b>d ) { paste("{", round((b-d)/(b+c-a-d), digits = 4), "}") 
+       } else if (a<c && b<=d ) { "{0}"
+       } else "ERROR"
+     # And reactive output
+     output$Nash <- renderText(
+       { solveNash(input$a, input$b, input$c, input$d) }
+     )
 
 })
+
+
+  
+
 ####### EOD #######

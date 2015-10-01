@@ -114,26 +114,35 @@ shinyUI(fluidPage(
                            plotOutput("stationaryDistribution"), 
                            plotOutput("singlePopulationSimulation")),
                   tabPanel("Invasion, Replacement & Fixed Points", 
-                           column(
-                             6,
-                             h4("Invasion dynamics for A:", style = "margin-top:25px;"),
-                             verbatimTextOutput("InvDynA1"),
-                             verbatimTextOutput("InvDynA2"),
-                             br(),
-                             h4("Replacement Probabilities for A:"),
-                             verbatimTextOutput("RepProbA1"),
-                             verbatimTextOutput("RepProbA2"),
-                             br()
-                           ),
-                           column(
-                             6,
-                             h4("Invasion dynamics for B:", style ="margin-top:25px;"),
-                             verbatimTextOutput("InvDynB1"),
-                             verbatimTextOutput("InvDynB2"),
-                             br(),
-                             h4("Replacement Probabilities for B:"),
-                             verbatimTextOutput("RepProbB1"),
-                             verbatimTextOutput("RepProbB2")
+                           fluidRow(
+                             column(
+                               6,
+                               h4("Invasion dynamics for A:", style = "margin-top:25px;"),
+                               verbatimTextOutput("InvDynA1"),
+                               verbatimTextOutput("InvDynA2"),
+                               br(),
+                               h4("Replacement Probabilities for A:"),
+                               verbatimTextOutput("RepProbA1"),
+                               verbatimTextOutput("RepProbA2"),
+                               br()
+                             ),
+                             column(
+                               6,
+                               h4("Invasion dynamics for B:", style ="margin-top:25px;"),
+                               verbatimTextOutput("InvDynB1"),
+                               verbatimTextOutput("InvDynB2"),
+                               br(),
+                               h4("Replacement Probabilities for B:"),
+                               verbatimTextOutput("RepProbB1"),
+                               verbatimTextOutput("RepProbB2")
+                             )),
+                           fluidRow(
+                             column(
+                               4,
+                               h4("Fixed Points of RD"), 
+                               verbatimTextOutput("Nash")
+                             )
+
                            )
                   )
       )
