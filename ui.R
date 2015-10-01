@@ -6,12 +6,15 @@ shinyUI(fluidPage(
   # Title
   titlePanel("The Moran Process for 2x2 Symmetric Games"),
   
+  # Load MathJax 
+  withMathJax(),
+  
   # Sidebar for Parameter Input
   sidebarLayout(
       
       sidebarPanel(
     
-        selectInput("interaction_structure", "Game Type:`",
+        selectInput("interaction_structure", "Game Type:",
             c("Degenerate Game", "Dominating Strategy Game", "Coordination Game", "Anticoordination Game", "Custom (manually change payoffs)"),
             selected = "Anticoordination Game"
           ),
@@ -110,25 +113,29 @@ shinyUI(fluidPage(
                   tabPanel("Stationary (Limit) Distribution & Simulation", 
                            plotOutput("stationaryDistribution"), 
                            plotOutput("singlePopulationSimulation")),
-                  tabPanel("Invasion Dynamics & Replacement Probabilities", 
-                           h4("Invasion Dynamics"),
-                             h5("Invasion dynamics for A:"),
-                               textOutput("InvDynA1"),
-                               textOutput("InvDynA2"),
+                  tabPanel("Invasion, Replacement & Fixed Points", 
+                           column(
+                             6,
+                             h4("Invasion dynamics for A:", style = "margin-top:25px;"),
+                             verbatimTextOutput("InvDynA1"),
+                             verbatimTextOutput("InvDynA2"),
                              br(),
-                             h5("Invasion dynamics for B:"),
-                               textOutput("InvDynB1"),
-                               textOutput("InvDynB2"),   
-                             br(), 
-                           h4("Replacement Probabilities"),
-                             h5("Replacement Probabilities A:"),
-                               textOutput("RepProbA1"),
-                               textOutput("RepProbA2"),
+                             h4("Replacement Probabilities for A:"),
+                             verbatimTextOutput("RepProbA1"),
+                             verbatimTextOutput("RepProbA2"),
+                             br()
+                           ),
+                           column(
+                             6,
+                             h4("Invasion dynamics for B:", style ="margin-top:25px;"),
+                             verbatimTextOutput("InvDynB1"),
+                             verbatimTextOutput("InvDynB2"),
                              br(),
-                             h5("Replacement Probabilities B:"),
-                               textOutput("RepProbB1"),
-                               textOutput("RepProbB2")
-                           ) 
+                             h4("Replacement Probabilities for B:"),
+                             verbatimTextOutput("RepProbB1"),
+                             verbatimTextOutput("RepProbB2")
+                           )
+                  )
       )
     )
   )
