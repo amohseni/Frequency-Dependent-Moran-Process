@@ -8,6 +8,7 @@ library(expm)
 
 # Define server logic required to draw our plot
 shinyServer(function(input, output, session) {
+  
   output$stationaryDistribution <- renderPlot({
     
         
@@ -22,7 +23,7 @@ shinyServer(function(input, output, session) {
 
     # Tour traditional game types and a fifth customizable option are set as our possible payoffs:
     # 1. Anticoordination Game (Polymorphic case)
-    if (input$interaction_structure=='Anticoordination Game') {
+    if (input$Players=='Anticoordination Game') {
       updateNumericInput(session, "a", value = 1)
       updateNumericInput(session, "b", value = 3)
       updateNumericInput(session, "c", value = 2)
@@ -337,8 +338,5 @@ shinyServer(function(input, output, session) {
      )
 
 })
-
-
-  
 
 ### EOD ###

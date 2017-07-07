@@ -16,7 +16,8 @@ shinyUI(fluidPage(
       
       sidebarPanel(
     
-        selectInput("interaction_structure", "Game Type:",
+        selectInput("interaction_structure", 
+                    "Game Type:",
             c("Degenerate Game", "Dominating Strategy Game", "Coordination Game", "Anticoordination Game", "Custom (manually change payoffs)"),
             selected = "Custom (manually change payoffs)"
           ),
@@ -112,7 +113,7 @@ shinyUI(fluidPage(
   # Main Panel with Stationary Distribution + Simulation & Stats Panels
     mainPanel(
       tabsetPanel(type = "tabs", 
-                  tabPanel("Stationary (Limit) Distribution & Simulation", 
+                  tabPanel("Stationary Distribution & Simulation", 
                            plotOutput("stationaryDistribution"), 
                            plotOutput("singlePopulationSimulation")),
                   tabPanel("Invasion, Replacement & Equilibria", 
@@ -146,7 +147,7 @@ shinyUI(fluidPage(
                              ),
                              column(
                                4,
-                               h4("Symmetric Nash Equilibria"),
+                               h4("Nash Equilibria"),
                                verbatimTextOutput("Nash")
                              ),                             
                              column(
