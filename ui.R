@@ -1,5 +1,7 @@
 library(shiny)
 
+Sys.setlocale("LC_ALL", "fr_FR.UTF-8")
+
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
   
@@ -113,7 +115,7 @@ shinyUI(fluidPage(
                   tabPanel("Stationary (Limit) Distribution & Simulation", 
                            plotOutput("stationaryDistribution"), 
                            plotOutput("singlePopulationSimulation")),
-                  tabPanel("Invasion, Replacement & Fixed Points", 
+                  tabPanel("Invasion, Replacement & Equilibria", 
                            fluidRow(
                              column(
                                6,
@@ -139,10 +141,19 @@ shinyUI(fluidPage(
                            fluidRow(
                              column(
                                4,
-                               h4("Fixed Points of RD"), 
+                               h4("Fixed Points of the Replicator"), 
+                               verbatimTextOutput("FixedPoints")
+                             ),
+                             column(
+                               4,
+                               h4("Symmetric Nash Equilibria"),
                                verbatimTextOutput("Nash")
-                             )
-
+                             ),                             
+                             column(
+                               4,
+                               h4("Evolutionarily Stable States"),
+                               verbatimTextOutput("ESS")
+                             )                             
                            )
                   )
       )

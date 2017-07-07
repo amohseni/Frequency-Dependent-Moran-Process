@@ -2,15 +2,12 @@
 # For 2x2 Symmetric Games
 
 # Load the shiny GUI library, 
-# and the matrix exponential package.
+# and the matrix exponential package
 library(shiny)
 library(expm)
 
-# Define server logic required to draw a histogram
+# Define server logic required to draw our plot
 shinyServer(function(input, output, session) {
-  # The expression that generates our histogram is wrapped in a call to renderPlot to indicate that:
-  #  1) It is "reactive" and therefore should re-execute automatically when inputs change
-  #  2) Its output type is a plot
   output$stationaryDistribution <- renderPlot({
     
         
@@ -23,29 +20,29 @@ shinyServer(function(input, output, session) {
     # Then the payoff to each combination of actions would be given by
     # U(A,A)=a, U(A,B)=b, U(B,A)=c, U(B,B)=d. 
 
-    # The four traditional game types and a customizable option are provided as default payoff settings:
-    # 1. Anticoordination Game
-    if (input$interaction_structure=='Anticoordination Game') { 
-      updateNumericInput(session, "a", value =1)
-      updateNumericInput(session, "b", value =3)
-      updateNumericInput(session, "c", value =2)
-      updateNumericInput(session, "d", value =1)
+    # Tour traditional game types and a fifth customizable option are set as our possible payoffs:
+    # 1. Anticoordination Game (Polymorphic case)
+    if (input$interaction_structure=='Anticoordination Game') {
+      updateNumericInput(session, "a", value = 1)
+      updateNumericInput(session, "b", value = 3)
+      updateNumericInput(session, "c", value = 2)
+      updateNumericInput(session, "d", value = 1)
     }
-    # 2. Coordination Game
+    # 2. Coordination Game (Bistable case)
     if (input$interaction_structure=='Coordination Game') {
       updateNumericInput(session, "a", value = 3)
       updateNumericInput(session, "b", value = 0)
       updateNumericInput(session, "c", value = 1)
       updateNumericInput(session, "d", value = 2)
     }
-    # 3. Dominating Strategy Game
+    # 3. Dominating Strategy Game (A dominates B)
     if (input$interaction_structure=='Dominating Strategy Game') { 
       updateNumericInput(session, "a", value = 3)
       updateNumericInput(session, "b", value = 1)
       updateNumericInput(session, "c", value = 2)
       updateNumericInput(session, "d", value = 0)
     }
-    # 4. Degenerate Game
+    # 4. Degenerate Game (Neutral case)
     if (input$interaction_structure=='Degenerate Game') { 
       updateNumericInput(session, "a", value = 1)
       updateNumericInput(session, "b", value = 1)
@@ -123,7 +120,7 @@ shinyServer(function(input, output, session) {
     # It follows from being ergodic that the limit distribution π is independent of any initial distribution π(0).
     
     # Denote MPM^∞ := MPMlim
-    MPMlim <- MPM %^% 10000000
+    MPMlim <- MPM %^% 1000000
     # Select any row from the MPM^∞ matrix to get the stationary disribution µ for the MPM
     µ <- MPMlim[round(N/2),]
     # For testing purposes, print the stationary distribution µ
@@ -153,17 +150,17 @@ shinyServer(function(input, output, session) {
     # If the fitness of a single mutant is less than the fitness of the resident population, then selection opposes invasion. 
     # Conversely, a strategy favored by selection for invading is likely to find a foothold in the population. 
     
-    print("Invasion dynamics for A:")
+    # Invasion dynamics for A:
     output$InvDynA1 <- if (h(1)>0) { renderText({"Selection favors A invading B"}) }
     else if (h(1)<0) { renderText({"Selection opposes A invading B"}) }
     else { renderText({"Invasion is neutral regarding invasion by A"}) }
-    output$InvDynA2 <- renderText({ paste("h(1)", h(1), sep=" = ") })
+    output$InvDynA2 <- renderText({ paste("h(1)", round(h(1), digits=4), sep=" = ") })
     
-    print("Invasion dynamics for B:")
+    # Invasion dynamics for B:
     output$InvDynB1 <- if (h(N-1)>0) { renderText({"Selection opposes B invading A"}) } 
     else if (h(N-1)<0) { renderText({"Selection favors B invading A"}) } 
     else { renderText({"Selection is neutral regarding invasion by B"}) }
-    output$InvDynB2 <- renderText({ paste("h(N-1)", h(N-1), sep=" = ") })
+    output$InvDynB2 <- renderText({ paste("h(N-1)", round(h(N-1), digits=4), sep=" = ") })
 
     # Next, we compute the fixation probabilities, ρAB and ρBA, 
     # corresponding to the probability that the process transitions from a single A-type mutant to an all-A population 
@@ -172,14 +169,14 @@ shinyServer(function(input, output, session) {
     # and proceed to compute the culative sum of the cumulative products of transitions over all population states.)
     X <- c(1:N)
     HBA <- function(i) (fB(i)/fA(i))
-    HBAvector <-sapply(X, HBA)
+    HBAvector <- sapply(X, HBA)
     HBAproductsVector <- cumprod(HBAvector)
     HBAsumsOfProductsVector <- cumsum(HBAproductsVector)
     ρAB <- 1/(1 + HBAsumsOfProductsVector[N-1])
     
     Y <- c(1:N)
     HAB <- function(i) (fA(i)/fB(i))
-    HABvector <-sapply(Y, HAB)
+    HABvector <- sapply(Y, HAB)
     HABproductsVector <- cumprod(HABvector)
     HABsumsOfProductsVector <- cumsum(HABproductsVector)
     ρBA <- 1/(1 + HABsumsOfProductsVector[N-1])
@@ -189,13 +186,14 @@ shinyServer(function(input, output, session) {
     # If the fixation probability of the mutant is less than that of a neutral mutant, 
     # then we say selection opposes fixation. If the fixation probability is greater than that of a neutral mutant, then we say selection favors fixation.
     
-    print("Replacement dynamics for A:")
-    output$RepProbA2 <- renderText({ paste("ρAB", ρAB, sep=" = ") })
+    # Replacement dynamics for A:
+    output$RepProbA2 <- renderText({ paste("ρAB", round(ρAB, digits=4), sep=" = ") })  
     output$RepProbA1 <- if (ρAB > (1/N)) { renderText({"Selection favors A replacing B"}) }
     else if (ρAB < (1/N)) { renderText({"Selection opposes A replacing B"}) } 
     else { renderText({"Selection is neutral regarding replacement by A"}) }
-    print("Replacement dynamics for B:")
-    output$RepProbB2 <- renderText({ paste("ρBA", ρBA, sep=" = ") })
+
+    # "Replacement dynamics for B:
+    output$RepProbB2 <- renderText({ paste("ρBA", round(ρBA, digits=4), sep=" = ") })
     output$RepProbB1 <- if (ρBA > (1/N)) { renderText({"Selection favors B replacing A"}) } 
     else if (ρBA < (1/N)) { renderText({"Selection opposes B replacing A"}) } 
     else { renderText({"Selection is neutral regarding replacement by B"}) }    
@@ -258,7 +256,7 @@ shinyServer(function(input, output, session) {
                              0))))
       
       # Denote MPM^∞ := MPMlim
-      MPMlim <- MPM %^% 100000
+      MPMlim <- MPM %^% 1000000
       # Select any row from the MPM^∞ matrix to get the stationary disribution µ for the MPM
       µ <- MPMlim[round(N/2),]
       
@@ -290,11 +288,28 @@ shinyServer(function(input, output, session) {
     abline(h=which.max(µ), col=rgb(82, 140, 202, max = 255))
     }  
   )
- 
+
+
+# CALCULATING THE FIXED POINTS, NASH ANDD ESS
+  # We solve for fixed points of the replicator dynamics
+  solveFixedPoints <- function(a, b, c, d) 
+           if (a>c && b>=d ) { "{0, 1}"
+    } else if (a>c && b<d ) { paste("{0,", round((d-b)/(d+a-b-c), digits = 4), ",1}")
+    } else if (a==c && b==d ) { "[0, 1]"
+    } else if (a==c && b>d ) { "{0, 1}"
+    } else if (a==c && b<d ) { "{0, 1}"
+    } else if (a<c && b>d ) { paste("{0,", round((b-d)/(b+c-a-d), digits = 4), ",1}") 
+    } else if (a<c && b<=d ) { "{0, 1}"
+    } else "ERROR"
+  # And reactive output
+  output$FixedPoints <- renderText(
+    { solveFixedPoints(input$a, input$b, input$c, input$d) }
+  )
+  
   # We solve for all symmetric Nash equilibria
     solveNash <- function(a, b, c, d) 
-      if (a>c && b>=d ) { "{1}"
-    } else if (a>c && b<d ) { paste("{0, ", round((d-b)/(d+a-b-c), digits = 4), ", 1}")
+           if (a>c && b>=d ) { "{1}"
+    } else if (a>c && b<d ) { paste("{0, ", round((d-b)/(d+a-b-c), digits = 4), ",1}")
     } else if (a==c && b==d ) { "[0, 1]"
     } else if (a==c && b>d ) { "{1}"
     } else if (a==c && b<d ) { "{0}"
@@ -308,7 +323,7 @@ shinyServer(function(input, output, session) {
      
      # We solve for ESS
      solveESS <- function(a, b, c, d) 
-       if (a>c && b>=d ) { "{1}"
+              if (a>c && b>=d ) { "{1}"
        } else if (a>c && b<d ) { "{0, 1}"
        } else if (a==c && b==d ) { "∅"
        } else if (a==c && b>d ) { "{1}"
@@ -317,8 +332,8 @@ shinyServer(function(input, output, session) {
        } else if (a<c && b<=d ) { "{0}"
        } else "ERROR"
      # And reactive output
-     output$Nash <- renderText(
-       { solveNash(input$a, input$b, input$c, input$d) }
+     output$ESS <- renderText(
+       { solveESS(input$a, input$b, input$c, input$d) }
      )
 
 })
@@ -326,4 +341,4 @@ shinyServer(function(input, output, session) {
 
   
 
-####### EOD #######
+### EOD ###
