@@ -16,7 +16,7 @@ shinyUI(fluidPage(
     
         selectInput("interaction_structure", "Game Type:",
             c("Degenerate Game", "Dominating Strategy Game", "Coordination Game", "Anticoordination Game", "Custom (manually change payoffs)"),
-            selected = "Anticoordination Game"
+            selected = "Custom (manually change payoffs)"
           ),
         
         # 2X2 Game Payoff Input Fields

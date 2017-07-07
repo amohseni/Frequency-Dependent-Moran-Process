@@ -45,7 +45,7 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "c", value = 2)
       updateNumericInput(session, "d", value = 0)
     }
-    # 4. Degenrate Game
+    # 4. Degenerate Game
     if (input$interaction_structure=='Degenerate Game') { 
       updateNumericInput(session, "a", value = 1)
       updateNumericInput(session, "b", value = 1)
