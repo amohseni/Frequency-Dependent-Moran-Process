@@ -1,14 +1,15 @@
-# COMPUTING THE MORAN PROCESS
-# For 2x2 Symmetric Games
+# FREQUENCY-DEPENDENT MORAN PROCESS
+# FOR 2x2 SYMMETRIC GAMES
+# << SERVER >>
+# by Aydin Mohseni
 
-# Load the shiny GUI library, 
-# and the matrix exponential package
+
+# Load matrix exponential package
 library(shiny)
 library(expm)
 
 # Define server logic required to draw our plot
 shinyServer(function(input, output, session) {
-  
   output$stationaryDistribution <- renderPlot({
     
         
@@ -21,9 +22,9 @@ shinyServer(function(input, output, session) {
     # Then the payoff to each combination of actions would be given by
     # U(A,A)=a, U(A,B)=b, U(B,A)=c, U(B,B)=d. 
 
-    # Tour traditional game types and a fifth customizable option are set as our possible payoffs:
+    # Four traditional game types and a fifth customizable option are set as our possible payoffs:
     # 1. Anticoordination Game (Polymorphic case)
-    if (input$Players=='Anticoordination Game') {
+    if (input$interaction_structure=='Anticoordination Game') {
       updateNumericInput(session, "a", value = 1)
       updateNumericInput(session, "b", value = 3)
       updateNumericInput(session, "c", value = 2)

@@ -1,9 +1,20 @@
+# FREQUENCY-DEPENDENT MORAN PROCESS
+# FOR 2x2 SYMMETRIC GAMES
+# << UI >>
+# by Aydin Mohseni
+
+
+# Load the shiny GUI library
 library(shiny)
 
+# Set encoding for special characters
 Sys.setlocale("LC_ALL", "fr_FR.UTF-8")
 
-# Define UI for application that draws a histogram
+# Define UI for application
 shinyUI(fluidPage(
+  
+  # CSS for visual
+  includeCSS("www/style.css"),
   
   # Title
   titlePanel("The Moran Process for 2x2 Symmetric Games"),
@@ -16,8 +27,7 @@ shinyUI(fluidPage(
       
       sidebarPanel(
     
-        selectInput("interaction_structure", 
-                    "Game Type:",
+        selectInput("interaction_structure", "Game Type:",
             c("Degenerate Game", "Dominating Strategy Game", "Coordination Game", "Anticoordination Game", "Custom (manually change payoffs)"),
             selected = "Custom (manually change payoffs)"
           ),
@@ -147,7 +157,7 @@ shinyUI(fluidPage(
                              ),
                              column(
                                4,
-                               h4("Nash Equilibria"),
+                               h4("Symmetric Nash Equilibria"),
                                verbatimTextOutput("Nash")
                              ),                             
                              column(
