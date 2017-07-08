@@ -86,7 +86,7 @@ shinyUI(fluidPage(
                     "Population Size:",
                     min = 2,
                     max = 200,
-                    value = 100),
+                    value = 50),
         
         # Mutation Rate Slider
         sliderInput("mutationRate",
@@ -109,6 +109,7 @@ shinyUI(fluidPage(
                     max = 1,
                     value = .05),
         
+        # Simulate Single Population Button
         tags$head(tags$script(src = "message-handler.js")),
         p(actionButton("simulateSinglePopulation", "Simulate Single Population"), align = "center"),
         

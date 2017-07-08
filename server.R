@@ -207,7 +207,7 @@ shinyServer(function(input, output, session) {
 # SIMULATING THE MORAN PROCESS FOR A SINGLE POPULATION
   # We create the function that simulates the population from a random initial population composition
   output$singlePopulationSimulation <- renderPlot({
-    simulationResetVariable<-input$simulateSinglePopulation
+    simulationResetVariable <- input$simulateSinglePopulation
 
     # INPUTS
       # The payoffs a, b, c, d, from the game
