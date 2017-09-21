@@ -17,10 +17,57 @@ shinyUI(fluidPage(
   includeCSS("www/style.css"),
   
   # Title
-  titlePanel("The Moran Process for 2x2 Symmetric Games"),
+  titlePanel("Frequency-Dependent Moran Process for 2x2 Symmetric Games"),
   
   # Load MathJax 
   withMathJax(),
+  
+  fluidRow(
+    style = "background-color:#F2F2F2; margin-top: 30px; margin-bottom: 30px; padding: 10px", 
+    column(
+      width = 3,
+      # Introduction text:
+      p(
+        tags$b("Description:"),
+        "The frequency-dependent Moran process is a standard stochastic model of biological and cultural evolution [Moran, 1962; Nowak 2006]. 
+        Here, we model the evolution of a population whose interactions are described by 2x2 symmetric games."
+      )
+    ),
+    column(
+      width = 3,
+      # Introduction text:
+      p(
+        "In the top plot, you can see the stationary distribution of the process.
+        this describes the frequency of time the process will spend in each population state,
+        in the long run."),
+      p(
+        "In the second plot, you can see the trajectory of evolution
+        for a single population."
+      )
+      ),
+    column(
+      width = 3,
+      p(
+        tags$b("Instructions:"),
+        "To see the changes in the long run behavior or evolution 
+        (top plot), change the parameters in the left panel
+        and the plot will automatically update to relfect these changes."
+      )
+      ),
+    column(
+      width = 3,
+      # Instructions text
+      p(
+        "To simulate evolutionary trajectories
+        (bottom plot), 
+        click 'RUN EVOLUTION' at the bottom of the left panel."
+      ),
+      p(
+        "To see various predictions of the outcome of evolution,
+        select the 'Invasion, Replacement & Equilibria' tab."
+      )
+      )
+    ),
   
   # Sidebar for Parameter Input
   sidebarLayout(
@@ -28,8 +75,8 @@ shinyUI(fluidPage(
       sidebarPanel(
     
         selectInput("interaction_structure", "Game Type:",
-            c("Degenerate Game", "Dominating Strategy Game", "Coordination Game", "Anticoordination Game", "Custom (manually change payoffs)"),
-            selected = "Custom (manually change payoffs)"
+            c("Neutral Game", "Dominating Strategy Game", "Coordination Game", "Anti-Coordination Game", "Custom"),
+            selected = "Custom"
           ),
         
         # 2X2 Game Payoff Input Fields
@@ -86,7 +133,7 @@ shinyUI(fluidPage(
                     "Population Size:",
                     min = 2,
                     max = 200,
-                    value = 50),
+                    value = 100),
         
         # Mutation Rate Slider
         sliderInput("mutationRate",
@@ -100,25 +147,18 @@ shinyUI(fluidPage(
                     "Intensity of Selection:",
                     min = 0,
                     max = 1,
-                    value = .1),
-
-        # Display Max Probability (Y-Axis)                         
-        sliderInput("probabilityMax",
-                    "(Y-Axis) Display Max Probability:",
-                    min = 0,
-                    max = 1,
-                    value = .05),
+                    value = .3),
         
         # Simulate Single Population Button
         tags$head(tags$script(src = "message-handler.js")),
-        p(actionButton("simulateSinglePopulation", "Simulate Single Population"), align = "center"),
+        p(actionButton("simulateSinglePopulation", "RUN EVOLUTION"), align = "center"),
         
         # Simulation Time Slider
         sliderInput("simulationTime",
                     "Simulation Time:",
                     min = 1,
                     max = 10000,
-                    value = 1000)
+                    value = 5000)
       ),
   
   # Main Panel with Stationary Distribution + Simulation & Stats Panels
