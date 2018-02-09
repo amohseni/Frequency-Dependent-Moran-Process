@@ -5,7 +5,10 @@
 
 
 # Load packages
-library(shiny, expm, ggplot2)
+library(shiny)
+library(ggplot2)
+
+options(shiny.sanitize.errors = FALSE)
 
 # Define server logic
 shinyServer(function(input, output, session) {
@@ -31,7 +34,7 @@ shinyServer(function(input, output, session) {
     if (input$interaction_structure == 'Coordination Game') {
       updateNumericInput(session, "a", value = 3)
       updateNumericInput(session, "b", value = 1)
-      updateNumericInput(session, "c", value = 1)
+      updateNumericInput(session, "c", value = 2)
       updateNumericInput(session, "d", value = 2)
     }
     # 3. Dominating Strategy Game (A dominates B)
@@ -408,7 +411,7 @@ shinyServer(function(input, output, session) {
     }
     
     # Plot the simulation
-    q <- ggplot(data = data.frame(time = 0:t, state = MPM.sim(t, MPM)), aes(x = time, y = state)) +
+    q <- ggplot(data = data.frame(time = 0:t, state = MPM.sim(t, MPM)) - 1, aes(x = time, y = state)) +
       geom_hline(yintercept = which.max(MuVector) - 1, colour = "#4FA7EF", size = 1) +
       geom_line(colour = "#4277BE") +
       ggtitle("Simulation of the Evolution of a Single Population") +

@@ -6,6 +6,7 @@
 
 # Load the shiny GUI library
 library(shiny)
+library(ggplot2)
 
 # Set encoding for special characters
 Sys.setlocale("LC_ALL", "fr_FR.UTF-8")
@@ -133,7 +134,7 @@ shinyUI(fluidPage(
                     "Population Size:",
                     min = 2,
                     max = 200,
-                    value = 100),
+                    value = 80),
         
         # Mutation Rate Slider
         sliderInput("mutationRate",
@@ -147,7 +148,7 @@ shinyUI(fluidPage(
                     "Intensity of Selection:",
                     min = 0,
                     max = 1,
-                    value = .3),
+                    value = .25),
         
         # Simulate Single Population Button
         tags$head(tags$script(src = "message-handler.js")),
@@ -158,7 +159,7 @@ shinyUI(fluidPage(
                     "Simulation Time:",
                     min = 1,
                     max = 10000,
-                    value = 5000)
+                    value = 4000)
       ),
   
   # Main Panel with Stationary Distribution + Simulation & Stats Panels
